@@ -34,6 +34,11 @@ class MapLoader {
 	 * @return Returns a {@code Map} holding the data for the map.
 	 */
 	static Map load(File mapFile) {
+		System.out.printf("-----------------------------------------------------\n");
+		System.out.printf("| libtiledload_0.3-dev (A Tiled XML TMX Map Loader) |\n");
+		System.out.printf("|            Written by Oliver Davenport            |\n");
+		System.out.printf("-----------------------------------------------------\n\n");
+		
 		// Create a new map
 		Map map = new Map();
 
@@ -76,7 +81,8 @@ class MapLoader {
 			// Set map sizes
 			map.setSize(mapSize);
 			map.setTileSize(mapTileSize);
-
+			
+			System.out.printf("Reading map metadata...");
 			// Get the <properties>/<property> children
 			List<Element> rootElementPropertiesElementPropertyList = new ArrayList<Element>();
 			try {
@@ -96,7 +102,8 @@ class MapLoader {
 			}
 
 			// Output status
-			System.out.printf("Loaded %d properties\n", rootElementPropertiesElementPropertyList.size());
+			System.out.printf(" done\n");
+			System.out.printf("Loading tilesets");
 
 			// Get the <tileset> children
 			List<Element> rootElementTilesetList = documentRootElement.getChildren("tileset");
@@ -149,10 +156,14 @@ class MapLoader {
 				map.addTileset(tileset);
 			}
 
+			System.out.printf("... done\n", rootElementTilesetList.size());
+			System.out.printf("Loading layers");
+
 			// Get all children
 			// (we only want <layer> and <objectgroup>)
 			List<Element> rootElementLayerList = documentRootElement.getChildren();
 			for (int i = 0; i < rootElementLayerList.size(); i++) {
+
 				// Get current element
 				Element layerChildElement = rootElementLayerList.get(i);
 
@@ -378,10 +389,13 @@ class MapLoader {
 					map.addLayer(objectGroup);
 				}
 			}
+			System.out.printf("... done\n", map.getLayers().length);
 		} catch (Exception e) {
 			// Something went wrong
 			e.printStackTrace();
 		}
+
+		System.out.printf("Map successfully loaded\n");
 
 		// Return the map
 		return map;
